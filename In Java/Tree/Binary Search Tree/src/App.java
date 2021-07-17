@@ -86,6 +86,7 @@ class BinarySearchTree{
     }
 
     Node insert(Node root, int val){
+
         if(root != null){
             if(root.data == val){
                 System.out.println("Already present");
@@ -107,27 +108,44 @@ class BinarySearchTree{
         }
     }
 
+    //Finding the right most leaf of left sub-tree
+    Node inOrderPre(Node root){
+        root = root.left;
+        while(root.right != null){
+            root = root.right;
+        }
+        return root;
+    }
+
     Node delete(Node root, int val){
-        if(root != null){
-            if(root.data == val){
-                if(root.left == null && root.right == null){
-                    root = null;
-                    return root;
-                }
+        //For blank tree
+        if(root == null){
+            return null;
+        }
 
-                else if(root.left != null || root.right != null){
-                    
-                }
-            }
-            else if(val < root.data)
-                root.left = delete(root.left, val);
-            else if(val > root.data)
-                root.right = delete(root.right, val);
-
+        //For leaf node
+        if(root.left == null && root.right == null){
+            root = null;
             return root;
         }
-        else
-            return root;
+        
+        //Searching the value
+        if(val < root.data){
+            root.left = delete(root.left, val);
+        }
+        
+        else if(val > root.data){
+            root.right = delete(root.right, val);
+        }
+        
+        //Deleting the value
+        else{
+            Node inPre = inOrderPre(root); //Finding the in-order predecessor
+            root.data = inPre.data; //Copy the new value of root
+            root.left = delete(root.left, inPre.data); //Deleting that node recusively
+        }
+
+        return root;
     }
 
 }
@@ -177,6 +195,14 @@ public class App {
         bt.root = bt.insert(bt.root, 0);
         bt.root = bt.insert(bt.root, 4);
         bt.root = bt.insert(bt.root, 9);
+        System.out.print("Inorder Traversal: ");
+        bt.inOrderTraversal(bt.root);
+        System.out.println();
+
+        bt.delete(bt.root, 4);
+        //bt.delete(bt.root, 9);
+        //bt.delete(bt.root, 0);
+        //bt.delete(bt.root, 10);
         System.out.print("Inorder Traversal: ");
         bt.inOrderTraversal(bt.root);
     }
